@@ -11,7 +11,8 @@ see clientbase file for an example
 4. Configure eth1 with dhcp see the interfaces file for a dhcp example:
 
 
-
+// Video tutorial in the references file. It helped me with the server setup.
+// There where small changes which had to be created.
 DNS Configuration:
 1. Check /etc/resolv.conf to ensure the correct nameservers are connected.
 If they are not configured use sudo nano /etc/resolvconf/resolv.conf.d/base and place them here to permenantly add them.
@@ -65,7 +66,6 @@ nslookup example.lan
 nslookup 192.168.1.30
 ping 192.168.1.30
 
-
 DHCP Cnfiguration:
 1. Install the Dhcp server:
 sudo apt-get install isc-dhcp-server
@@ -79,6 +79,9 @@ sudo nano /etc/dhcp/dhcpd.conf
 4. Restart the dhcp service:
 sudo service isc-dhcp-server restart
 
+
+//Credit for the below code can be found at:
+// https://help.ubuntu.com/community/Internet/ConnectionSharing
 ENABLE SERVER ROUTING:
 1. allow routing of the initial packets. 
 sudo iptables -A FORWARD -o eth0 -i eth1 -s 192.168.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
@@ -110,3 +113,44 @@ net.ipv4.conf.all.forwarding=1
 Enable Client Routing
 1. configure routing:
 sudo ip route add default via 192.168.1.1
+
+
+Enable NFS Server:
+
+1. install nfs:
+sudo apt-get install nfs-kernel-server //kernel not kernal dont make my mistake.
+
+2. create your folder:
+sudo mkdir /home/myshare
+
+3. edit the /etc/exports file see exprorts for example:
+sudo nano /etc/exports
+
+4. Update the nfs table:
+exportfs -a
+
+5. start or restart the server:
+service nfs-kernel-server start
+service nfs-kernel-server restart
+
+
+Configure NFS Client:
+1. install nfs:
+sudo apt-get install nfs-common
+
+2. make directories for the mount points
+sudo mkdir -p /mount/nfs/home/myshare
+
+3. mount the folder:
+sudo mount -t nfs 192.168.1.30:/home /mount/nfs/home/myshare
+
+4. test the connection:
+sudo touch /mount/nfs/home/myshare/test
+
+5. Mount on startup
+Sudo nano /etc/fstab
+//check fstav file for example
+sudo reboot
+sudo mount -a
+sudo nano /etc/rc.local
+insert mount -a before the exit 0 line

@@ -1,0 +1,3 @@
+######insert at the end of the file###########
+192.168.1.30:/home /mount/nfs/home nfs defaults 0 0
+192.168.1.30:/home/myshare /mount/nfs/home/myshare nfs defaults 0 0

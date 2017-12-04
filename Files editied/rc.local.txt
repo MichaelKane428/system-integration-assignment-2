@@ -1,0 +1,3 @@
+#####insert at end of file######
+mount -a
+exit 0
