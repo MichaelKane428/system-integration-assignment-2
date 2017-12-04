@@ -52,3 +52,18 @@ sudo /etc/init.d/bind9 restart
 nslookup example.lan
 nslookup 192.168.1.30
 ping 192.168.1.30
+
+
+DHCP Cnfiguration:
+
+1. Install the Dhcp server:
+sudo apt-get install isc-dhcp-server
+
+2. edit the isc-dhcp-server file using mine as an example:
+sudo nano /etc/default/isc-dhcp-server
+
+3. edit the dhcpd.conf file using mine as an example:
+sudo nano /etc/dhcp/dhcpd.conf
+
+4. Restart the dhcp service:
+sudo service isc-dhcp-server restart
