@@ -1,5 +1,17 @@
 # system-integration-assignment-2
 
+# Configure client
+1. Configure the /etc/resolvconf/resolv.conf.d/base file for the client,
+see clientbase file for an example
+
+2. Disable eth0
+
+3. Make sure that eth1 is an internal adapter.
+
+4. Configure eth1 with dhcp see the interfaces file for a dhcp example:
+
+
+
 DNS Configuration:
 1. Check /etc/resolv.conf to ensure the correct nameservers are connected.
 If they are not configured use sudo nano /etc/resolvconf/resolv.conf.d/base and place them here to permenantly add them.
@@ -55,7 +67,6 @@ ping 192.168.1.30
 
 
 DHCP Cnfiguration:
-
 1. Install the Dhcp server:
 sudo apt-get install isc-dhcp-server
 
@@ -67,3 +78,35 @@ sudo nano /etc/dhcp/dhcpd.conf
 
 4. Restart the dhcp service:
 sudo service isc-dhcp-server restart
+
+ENABLE SERVER ROUTING:
+1. allow routing of the initial packets. 
+sudo iptables -A FORWARD -o eth0 -i eth1 -s 192.168.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
+
+2. When the connection is established allow routing of the remaining packets.
+sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+3. allow nating
+sudo iptables -t nat -F POSTROUTING
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+4. save the changes:
+sudo iptables-save | sudo tee /etc/iptables.sav  //this is not a typo.
+
+5. modify /etc/rc.local file add the following line before exit 0 or see example file.
+iptables-restore < /etc/iptables.sav 
+
+6. Enable ip forwarding:
+sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
+
+7. uncomment the following line:
+net.ipv4.ipforward=1
+
+8. add the following lines after the above:
+net.ipv4.conf.default.forwarding=1
+net.ipv4.conf.all.forwarding=1
+
+
+Enable Client Routing
+1. configure routing:
+sudo ip route add default via 192.168.1.1
