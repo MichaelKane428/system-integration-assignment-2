@@ -84,7 +84,7 @@ sudo service isc-dhcp-server restart
 // https://help.ubuntu.com/community/Internet/ConnectionSharing
 ENABLE SERVER ROUTING:
 1. allow routing of the initial packets. 
-sudo iptables -A FORWARD -o eth0 -i eth1 -s 192.168.0.0/24 -m conntrack --ctstate NEW -j ACCEPT
+sudo iptables -A FORWARD -o eth0 -i eth1 -s 192.168.1.0/24 -m conntrack --ctstate NEW -j ACCEPT
 
 2. When the connection is established allow routing of the remaining packets.
 sudo iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
