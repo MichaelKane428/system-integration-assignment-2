@@ -1,6 +1,6 @@
 # system-integration-assignment-2
 
-# Configure client
+######### Configure client############
 1. Configure the /etc/resolvconf/resolv.conf.d/base file for the client,
 see clientbase file for an example
 
@@ -13,7 +13,7 @@ see clientbase file for an example
 
 // Video tutorial in the references file. It helped me with the server setup.
 // There where small changes which had to be created.
-DNS Configuration:
+#################DNS Configuration:###########
 1. Check /etc/resolv.conf to ensure the correct nameservers are connected.
 If they are not configured use sudo nano /etc/resolvconf/resolv.conf.d/base and place them here to permenantly add them.
 TO view an example check my base file in the files edited folder.
@@ -66,7 +66,7 @@ nslookup example.lan
 nslookup 192.168.1.30
 ping 192.168.1.30
 
-DHCP Cnfiguration:
+############DHCP Cnfiguration:#############
 1. Install the Dhcp server:
 sudo apt-get install isc-dhcp-server
 
@@ -82,7 +82,7 @@ sudo service isc-dhcp-server restart
 
 //Credit for the below code can be found at:
 // https://help.ubuntu.com/community/Internet/ConnectionSharing
-ENABLE SERVER ROUTING:
+############ENABLE SERVER ROUTING:##################
 1. allow routing of the initial packets. 
 sudo iptables -A FORWARD -o eth0 -i eth1 -s 192.168.1.0/24 -m conntrack --ctstate NEW -j ACCEPT
 
@@ -115,7 +115,7 @@ Enable Client Routing
 sudo ip route add default via 192.168.1.1
 
 
-Enable NFS Server:
+##################Enable NFS Server:########
 
 1. install nfs:
 sudo apt-get install nfs-kernel-server //kernel not kernal dont make my mistake.
@@ -134,7 +134,7 @@ service nfs-kernel-server start
 service nfs-kernel-server restart
 
 
-Configure NFS Client:
+############Configure NFS Client:###################
 1. install nfs:
 sudo apt-get install nfs-common
 
@@ -154,3 +154,28 @@ sudo reboot
 sudo mount -a
 sudo nano /etc/rc.local
 insert mount -a before the exit 0 line
+
+#######ftp server configuration######
+//https://www.liquidweb.com/kb/how-to-install-and-configure-vsftpd-on-ubuntu-14-04-lts/
+1. install vsftpd:
+sudo apt-get install vsftpd
+
+2. edit the vsftpd.conf file:
+sudo nano /etc/vsftpd.conf
+
+3. uncomment/insert/change the following:
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+chroot_local_user=YES
+
+4. Restart vsftpd
+service vsftpd restart
+
+#######Configure FTP client#####
+
+1. install ftp
+sudo apt-get install ftp
+
+2. connect to the server:
+ftp 192.168.1.30
